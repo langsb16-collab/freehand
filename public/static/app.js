@@ -9,6 +9,19 @@ let currentStatus = 'voting'
 
 // 페이지 로드 시 초기화
 document.addEventListener('DOMContentLoaded', () => {
+  // 언어 선택기 추가
+  const navContainer = document.querySelector('nav .container .flex')
+  if (navContainer && !document.getElementById('languageSelector')) {
+    const languageSelectorContainer = document.createElement('div')
+    languageSelectorContainer.id = 'languageSelector'
+    languageSelectorContainer.appendChild(createLanguageSelector())
+    
+    const loginBtn = document.getElementById('loginBtn')
+    if (loginBtn) {
+      loginBtn.parentNode.insertBefore(languageSelectorContainer, loginBtn)
+    }
+  }
+  
   initializeApp()
 })
 
@@ -94,9 +107,10 @@ async function loadProposals(append = false) {
       container.innerHTML = `
         <div class="col-span-full text-center py-12">
           <i class="fas fa-inbox text-gray-300 text-6xl mb-4"></i>
-          <p class="text-gray-500 text-lg">등록된 정책 제안이 없습니다.</p>
+          <p class="text-gray-500 text-lg" data-i18n="proposals.empty">등록된 정책 제안이 없습니다.</p>
         </div>
       `
+      updatePageLanguage()
       return
     }
     
@@ -125,11 +139,11 @@ function createProposalCard(proposal) {
   }
   
   const categoryNames = {
-    transport: '교통',
-    safety: '안전',
-    culture: '문화',
-    welfare: '복지',
-    environment: '환경'
+    transport: t('proposals.category.transport'),
+    safety: t('proposals.category.safety'),
+    culture: t('proposals.category.culture'),
+    welfare: t('proposals.category.welfare'),
+    environment: t('proposals.category.environment')
   }
   
   const statusColors = {
@@ -141,11 +155,11 @@ function createProposalCard(proposal) {
   }
   
   const statusNames = {
-    pending: '검토 중',
-    approved: '승인됨',
-    voting: '투표 중',
-    adopted: '채택됨',
-    completed: '완료됨'
+    pending: t('proposals.status.pending'),
+    approved: t('proposals.status.approved'),
+    voting: t('proposals.status.voting'),
+    adopted: t('proposals.status.adopted'),
+    completed: t('proposals.status.completed')
   }
   
   const totalVotes = proposal.vote_count_yes + proposal.vote_count_no
@@ -173,8 +187,8 @@ function createProposalCard(proposal) {
     
     <div class="mb-4">
       <div class="flex justify-between text-sm mb-1">
-        <span class="text-gray-600">찬성 ${yesPercentage}%</span>
-        <span class="text-gray-600">${totalVotes}명 참여</span>
+        <span class="text-gray-600">${t('proposals.agree')} ${yesPercentage}%</span>
+        <span class="text-gray-600">${totalVotes}${t('proposals.participants')}</span>
       </div>
       <div class="w-full bg-gray-200 rounded-full h-2">
         <div class="bg-green-500 h-2 rounded-full transition-all" style="width: ${yesPercentage}%"></div>

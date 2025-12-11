@@ -542,16 +542,17 @@ app.get('/', (c) => {
                         <h1 class="text-2xl font-bold text-gray-800">CivicOne</h1>
                     </div>
                     <div class="hidden md:flex space-x-6">
-                        <a href="#proposals" class="text-gray-600 hover:text-primary transition">정책 제안</a>
-                        <a href="#voting" class="text-gray-600 hover:text-primary transition">투표 중</a>
-                        <a href="#progress" class="text-gray-600 hover:text-primary transition">진행 상황</a>
-                        <a href="#statistics" class="text-gray-600 hover:text-primary transition">통계</a>
+                        <a href="#proposals" class="text-gray-600 hover:text-primary transition" data-i18n="nav.proposals">정책 제안</a>
+                        <a href="#voting" class="text-gray-600 hover:text-primary transition" data-i18n="nav.voting">투표 중</a>
+                        <a href="#progress" class="text-gray-600 hover:text-primary transition" data-i18n="nav.progress">진행 상황</a>
+                        <a href="#statistics" class="text-gray-600 hover:text-primary transition" data-i18n="nav.statistics">통계</a>
                         <a href="/static/admin.html" class="text-red-600 hover:text-red-700 transition">
-                            <i class="fas fa-shield-alt mr-1"></i>관리자
+                            <i class="fas fa-shield-alt mr-1"></i><span data-i18n="nav.admin">관리자</span>
                         </a>
                     </div>
+                    <div id="languageSelector" class="mr-4"></div>
                     <button id="loginBtn" class="bg-primary text-white px-6 py-2 rounded-lg hover:bg-blue-700 transition">
-                        <i class="fas fa-sign-in-alt mr-2"></i>로그인
+                        <i class="fas fa-sign-in-alt mr-2"></i><span data-i18n="nav.login">로그인</span>
                     </button>
                 </div>
             </div>
@@ -560,12 +561,12 @@ app.get('/', (c) => {
         <!-- 히어로 섹션 -->
         <div class="bg-gradient-to-r from-primary to-secondary text-white py-16">
             <div class="container mx-auto px-4 text-center">
-                <h2 class="text-4xl md:text-5xl font-bold mb-4">
+                <h2 class="text-4xl md:text-5xl font-bold mb-4" data-i18n="hero.title">
                     주민이 만드는 정책, 지자체가 응답하는 플랫폼
                 </h2>
-                <p class="text-xl mb-8">실명 기반의 책임 있는 공론장으로 행정 신뢰도를 높입니다</p>
+                <p class="text-xl mb-8" data-i18n="hero.subtitle">실명 기반의 책임 있는 공론장으로 행정 신뢰도를 높입니다</p>
                 <button class="bg-white text-primary px-8 py-3 rounded-lg font-bold hover:bg-gray-100 transition">
-                    <i class="fas fa-lightbulb mr-2"></i>정책 제안하기
+                    <i class="fas fa-lightbulb mr-2"></i><span data-i18n="hero.cta">정책 제안하기</span>
                 </button>
             </div>
         </div>
@@ -575,19 +576,19 @@ app.get('/', (c) => {
             <div class="grid grid-cols-1 md:grid-cols-4 gap-6" id="statistics">
                 <div class="bg-white p-6 rounded-lg shadow-md text-center">
                     <div class="text-4xl font-bold text-primary" id="stat-proposals">-</div>
-                    <div class="text-gray-600 mt-2">총 제안 수</div>
+                    <div class="text-gray-600 mt-2" data-i18n="stat.proposals">총 제안 수</div>
                 </div>
                 <div class="bg-white p-6 rounded-lg shadow-md text-center">
                     <div class="text-4xl font-bold text-green-600" id="stat-votes">-</div>
-                    <div class="text-gray-600 mt-2">총 투표 수</div>
+                    <div class="text-gray-600 mt-2" data-i18n="stat.votes">총 투표 수</div>
                 </div>
                 <div class="bg-white p-6 rounded-lg shadow-md text-center">
                     <div class="text-4xl font-bold text-purple-600" id="stat-users">-</div>
-                    <div class="text-gray-600 mt-2">참여 주민</div>
+                    <div class="text-gray-600 mt-2" data-i18n="stat.users">참여 주민</div>
                 </div>
                 <div class="bg-white p-6 rounded-lg shadow-md text-center">
                     <div class="text-4xl font-bold text-orange-600" id="stat-adopted">-</div>
-                    <div class="text-gray-600 mt-2">채택된 정책</div>
+                    <div class="text-gray-600 mt-2" data-i18n="stat.adopted">채택된 정책</div>
                 </div>
             </div>
         </div>
@@ -596,22 +597,22 @@ app.get('/', (c) => {
         <div class="container mx-auto px-4 py-8">
             <div class="flex justify-between items-center mb-6">
                 <h3 class="text-3xl font-bold text-gray-800">
-                    <i class="fas fa-vote-yea text-primary mr-2"></i>투표 중인 정책
+                    <i class="fas fa-vote-yea text-primary mr-2"></i><span data-i18n="proposals.voting.title">투표 중인 정책</span>
                 </h3>
                 <div class="flex space-x-2">
                     <select class="border rounded-lg px-4 py-2" id="categoryFilter">
-                        <option value="">전체 카테고리</option>
-                        <option value="transport">교통</option>
-                        <option value="safety">안전</option>
-                        <option value="culture">문화</option>
-                        <option value="welfare">복지</option>
-                        <option value="environment">환경</option>
+                        <option value="" data-i18n="proposals.category.all">전체 카테고리</option>
+                        <option value="transport" data-i18n="proposals.category.transport">교통</option>
+                        <option value="safety" data-i18n="proposals.category.safety">안전</option>
+                        <option value="culture" data-i18n="proposals.category.culture">문화</option>
+                        <option value="welfare" data-i18n="proposals.category.welfare">복지</option>
+                        <option value="environment" data-i18n="proposals.category.environment">환경</option>
                     </select>
                     <select class="border rounded-lg px-4 py-2" id="statusFilter">
-                        <option value="voting">투표 중</option>
-                        <option value="pending">검토 중</option>
-                        <option value="approved">승인됨</option>
-                        <option value="adopted">채택됨</option>
+                        <option value="voting" data-i18n="proposals.status.voting">투표 중</option>
+                        <option value="pending" data-i18n="proposals.status.pending">검토 중</option>
+                        <option value="approved" data-i18n="proposals.status.approved">승인됨</option>
+                        <option value="adopted" data-i18n="proposals.status.adopted">채택됨</option>
                     </select>
                 </div>
             </div>
@@ -621,7 +622,7 @@ app.get('/', (c) => {
             </div>
 
             <div class="text-center mt-8">
-                <button id="loadMoreBtn" class="bg-primary text-white px-8 py-3 rounded-lg hover:bg-blue-700 transition">
+                <button id="loadMoreBtn" class="bg-primary text-white px-8 py-3 rounded-lg hover:bg-blue-700 transition" data-i18n="proposals.load.more">
                     더 보기
                 </button>
             </div>
@@ -630,17 +631,18 @@ app.get('/', (c) => {
         <!-- 푸터 -->
         <footer class="bg-gray-800 text-white py-8 mt-16">
             <div class="container mx-auto px-4 text-center">
-                <p class="mb-4">주민 정책참여 플랫폼 CivicOne</p>
-                <p class="text-gray-400 text-sm">실명 기반 · 유료제 · 투명한 정책 집행</p>
+                <p class="mb-4" data-i18n="footer.title">주민 정책참여 플랫폼 CivicOne</p>
+                <p class="text-gray-400 text-sm" data-i18n="footer.tagline">실명 기반 · 유료제 · 투명한 정책 집행</p>
                 <div class="mt-4 space-x-4">
-                    <a href="#" class="text-gray-400 hover:text-white transition">이용약관</a>
-                    <a href="#" class="text-gray-400 hover:text-white transition">개인정보처리방침</a>
-                    <a href="#" class="text-gray-400 hover:text-white transition">고객센터</a>
+                    <a href="#" class="text-gray-400 hover:text-white transition" data-i18n="footer.terms">이용약관</a>
+                    <a href="#" class="text-gray-400 hover:text-white transition" data-i18n="footer.privacy">개인정보처리방침</a>
+                    <a href="#" class="text-gray-400 hover:text-white transition" data-i18n="footer.support">고객센터</a>
                 </div>
             </div>
         </footer>
 
         <script src="https://cdn.jsdelivr.net/npm/axios@1.6.0/dist/axios.min.js"></script>
+        <script src="/static/i18n.js"></script>
         <script src="/static/app.js"></script>
     </body>
     </html>

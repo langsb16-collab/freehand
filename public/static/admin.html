@@ -26,12 +26,13 @@
             <div class="flex justify-between items-center">
                 <div class="flex items-center space-x-2">
                     <i class="fas fa-shield-alt text-primary text-2xl"></i>
-                    <h1 class="text-2xl font-bold">CivicOne 관리자</h1>
+                    <h1 class="text-2xl font-bold" data-i18n="admin.title">CivicOne 관리자</h1>
                 </div>
                 <div class="flex items-center space-x-4">
-                    <span class="text-gray-300">관리자: 박민수</span>
+                    <div id="adminLanguageSelector"></div>
+                    <span class="text-gray-300"><span data-i18n="admin.user">관리자</span>: 박민수</span>
                     <a href="/" class="bg-primary px-4 py-2 rounded-lg hover:bg-blue-700 transition">
-                        <i class="fas fa-home mr-2"></i>메인으로
+                        <i class="fas fa-home mr-2"></i><span data-i18n="admin.home">메인으로</span>
                     </a>
                 </div>
             </div>
@@ -41,14 +42,14 @@
     <!-- 통계 대시보드 -->
     <div class="container mx-auto px-4 py-8">
         <h2 class="text-3xl font-bold text-gray-800 mb-6">
-            <i class="fas fa-chart-bar text-primary mr-2"></i>주요 통계
+            <i class="fas fa-chart-bar text-primary mr-2"></i><span data-i18n="nav.statistics">주요 통계</span>
         </h2>
         
         <div class="grid grid-cols-1 md:grid-cols-4 gap-6 mb-8">
             <div class="bg-white p-6 rounded-lg shadow-md">
                 <div class="flex items-center justify-between">
                     <div>
-                        <p class="text-gray-600 text-sm">검토 대기 중</p>
+                        <p class="text-gray-600 text-sm" data-i18n="admin.stat.pending">검토 대기 중</p>
                         <p class="text-3xl font-bold text-orange-600" id="stat-pending">0</p>
                     </div>
                     <i class="fas fa-clock text-orange-600 text-4xl"></i>
@@ -58,7 +59,7 @@
             <div class="bg-white p-6 rounded-lg shadow-md">
                 <div class="flex items-center justify-between">
                     <div>
-                        <p class="text-gray-600 text-sm">투표 진행 중</p>
+                        <p class="text-gray-600 text-sm" data-i18n="admin.stat.voting">투표 진행 중</p>
                         <p class="text-3xl font-bold text-green-600" id="stat-voting">0</p>
                     </div>
                     <i class="fas fa-vote-yea text-green-600 text-4xl"></i>
@@ -68,7 +69,7 @@
             <div class="bg-white p-6 rounded-lg shadow-md">
                 <div class="flex items-center justify-between">
                     <div>
-                        <p class="text-gray-600 text-sm">채택 예정</p>
+                        <p class="text-gray-600 text-sm" data-i18n="admin.stat.adopted">채택 예정</p>
                         <p class="text-3xl font-bold text-purple-600" id="stat-adopted">0</p>
                     </div>
                     <i class="fas fa-check-circle text-purple-600 text-4xl"></i>
@@ -78,7 +79,7 @@
             <div class="bg-white p-6 rounded-lg shadow-md">
                 <div class="flex items-center justify-between">
                     <div>
-                        <p class="text-gray-600 text-sm">총 참여 주민</p>
+                        <p class="text-gray-600 text-sm" data-i18n="admin.stat.users">총 참여 주민</p>
                         <p class="text-3xl font-bold text-blue-600" id="stat-users">0</p>
                     </div>
                     <i class="fas fa-users text-blue-600 text-4xl"></i>
@@ -90,16 +91,16 @@
         <div class="bg-white rounded-lg shadow-md mb-6">
             <div class="border-b">
                 <div class="flex">
-                    <button class="tab-btn px-6 py-4 font-semibold border-b-2 border-primary text-primary" data-tab="pending">
+                    <button class="tab-btn px-6 py-4 font-semibold border-b-2 border-primary text-primary" data-tab="pending" data-i18n="admin.tab.pending">
                         검토 대기 중
                     </button>
-                    <button class="tab-btn px-6 py-4 font-semibold text-gray-600 hover:text-primary" data-tab="voting">
+                    <button class="tab-btn px-6 py-4 font-semibold text-gray-600 hover:text-primary" data-tab="voting" data-i18n="admin.tab.voting">
                         투표 중
                     </button>
-                    <button class="tab-btn px-6 py-4 font-semibold text-gray-600 hover:text-primary" data-tab="adopted">
+                    <button class="tab-btn px-6 py-4 font-semibold text-gray-600 hover:text-primary" data-tab="adopted" data-i18n="admin.tab.adopted">
                         채택된 정책
                     </button>
-                    <button class="tab-btn px-6 py-4 font-semibold text-gray-600 hover:text-primary" data-tab="all">
+                    <button class="tab-btn px-6 py-4 font-semibold text-gray-600 hover:text-primary" data-tab="all" data-i18n="admin.tab.all">
                         전체 제안
                     </button>
                 </div>
@@ -143,6 +144,7 @@
     </div>
 
     <script src="https://cdn.jsdelivr.net/npm/axios@1.6.0/dist/axios.min.js"></script>
+    <script src="/static/i18n.js"></script>
     <script>
         const API_BASE = '/api'
         let currentTab = 'pending'
@@ -151,6 +153,15 @@
 
         // 페이지 로드
         document.addEventListener('DOMContentLoaded', () => {
+            // 언어 선택기 추가
+            const adminLangContainer = document.getElementById('adminLanguageSelector')
+            if (adminLangContainer) {
+                adminLangContainer.appendChild(createLanguageSelector())
+            }
+            
+            // 초기 언어 적용
+            updatePageLanguage()
+            
             loadStatistics()
             loadProposals('pending')
             setupTabs()
