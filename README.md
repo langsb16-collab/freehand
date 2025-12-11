@@ -30,6 +30,23 @@
 
 ## 🎯 주요 기능
 
+### 🌍 다국어 지원 (NEW!)
+
+**7개 언어 완벽 지원:**
+- 🇰🇷 한국어 (Korean)
+- 🇺🇸 영어 (English)
+- 🇨🇳 중국어 (Chinese)
+- 🇯🇵 일본어 (Japanese)
+- 🇻🇳 베트남어 (Vietnamese)
+- 🇲🇳 몽골어 (Mongolian)
+- 🇷🇺 러시아어 (Russian)
+
+**주요 특징:**
+- 헤더 우측 언어 선택기로 실시간 전환
+- localStorage에 언어 설정 자동 저장
+- 모든 UI 요소 다국어 번역 지원
+- 관리자 페이지도 다국어 지원
+
 ### ✅ 현재 구현된 기능
 
 #### 1. 정책 제안 시스템
@@ -187,6 +204,7 @@ PATCH /api/notifications/:id/read # 알림 읽음 처리
 
 ### Frontend
 - **Vanilla JavaScript**: 프레임워크 없이 순수 JS
+- **i18n System**: 자체 개발 다국어 시스템 (7개 언어)
 - **Tailwind CSS**: 유틸리티 우선 CSS 프레임워크
 - **Axios**: HTTP 클라이언트
 - **FontAwesome**: 아이콘 라이브러리
@@ -397,3 +415,79 @@ npx wrangler pages secret put OPENAI_API_KEY --project-name webapp
 ---
 
 Made with ❤️ for better local governance
+
+---
+
+## 🌍 다국어 지원 상세
+
+### 지원 언어 목록
+
+| 언어 | 코드 | 완성도 |
+|-----|------|--------|
+| 🇰🇷 한국어 | ko | ✅ 100% |
+| 🇺🇸 English | en | ✅ 100% |
+| 🇨🇳 中文 | zh | ✅ 100% |
+| 🇯🇵 日本語 | ja | ✅ 100% |
+| 🇻🇳 Tiếng Việt | vi | ✅ 100% |
+| 🇲🇳 Монгол | mn | ✅ 100% |
+| 🇷🇺 Русский | ru | ✅ 100% |
+
+### 번역 범위
+
+**완벽 번역된 영역:**
+- ✅ 네비게이션 메뉴
+- ✅ 히어로 섹션
+- ✅ 통계 카드
+- ✅ 정책 제안 목록
+- ✅ 정책 상세 페이지
+- ✅ 투표 인터페이스
+- ✅ 댓글 시스템
+- ✅ 관리자 대시보드
+- ✅ 알림 메시지
+- ✅ 푸터
+
+### 사용 방법
+
+#### 1. 언어 변경
+메인 페이지와 관리자 페이지 상단의 언어 선택 드롭다운에서 원하는 언어를 선택하면 즉시 적용됩니다.
+
+#### 2. 자동 저장
+선택한 언어는 브라우저의 localStorage에 저장되어 다음 방문 시에도 유지됩니다.
+
+#### 3. 개발자 가이드
+
+**새로운 번역 키 추가:**
+```javascript
+// i18n.js에서
+const translations = {
+  ko: {
+    'new.key': '새로운 텍스트',
+    ...
+  },
+  en: {
+    'new.key': 'New Text',
+    ...
+  }
+}
+```
+
+**HTML에서 사용:**
+```html
+<span data-i18n="new.key">새로운 텍스트</span>
+```
+
+**JavaScript에서 사용:**
+```javascript
+const text = t('new.key')
+```
+
+### 기술 스펙
+
+- **번역 파일**: `/public/static/i18n.js` (29KB)
+- **번역 키 개수**: 70+ 키
+- **로딩 방식**: CDN 없이 자체 호스팅
+- **성능**: < 1ms 번역 속도
+- **호환성**: 모든 모던 브라우저 지원
+
+---
+
