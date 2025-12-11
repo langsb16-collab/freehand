@@ -1,0 +1,417 @@
+<!DOCTYPE html>
+<html lang="ko">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>CivicOne 관리자 페이지</title>
+    <script src="https://cdn.tailwindcss.com"></script>
+    <link href="https://cdn.jsdelivr.net/npm/@fortawesome/fontawesome-free@6.4.0/css/all.min.css" rel="stylesheet">
+    <script>
+      tailwind.config = {
+        theme: {
+          extend: {
+            colors: {
+              primary: '#2563eb',
+              secondary: '#7c3aed',
+            }
+          }
+        }
+      }
+    </script>
+</head>
+<body class="bg-gray-50">
+    <!-- 헤더 -->
+    <nav class="bg-gray-800 text-white shadow-md">
+        <div class="container mx-auto px-4 py-4">
+            <div class="flex justify-between items-center">
+                <div class="flex items-center space-x-2">
+                    <i class="fas fa-shield-alt text-primary text-2xl"></i>
+                    <h1 class="text-2xl font-bold">CivicOne 관리자</h1>
+                </div>
+                <div class="flex items-center space-x-4">
+                    <span class="text-gray-300">관리자: 박민수</span>
+                    <a href="/" class="bg-primary px-4 py-2 rounded-lg hover:bg-blue-700 transition">
+                        <i class="fas fa-home mr-2"></i>메인으로
+                    </a>
+                </div>
+            </div>
+        </div>
+    </nav>
+
+    <!-- 통계 대시보드 -->
+    <div class="container mx-auto px-4 py-8">
+        <h2 class="text-3xl font-bold text-gray-800 mb-6">
+            <i class="fas fa-chart-bar text-primary mr-2"></i>주요 통계
+        </h2>
+        
+        <div class="grid grid-cols-1 md:grid-cols-4 gap-6 mb-8">
+            <div class="bg-white p-6 rounded-lg shadow-md">
+                <div class="flex items-center justify-between">
+                    <div>
+                        <p class="text-gray-600 text-sm">검토 대기 중</p>
+                        <p class="text-3xl font-bold text-orange-600" id="stat-pending">0</p>
+                    </div>
+                    <i class="fas fa-clock text-orange-600 text-4xl"></i>
+                </div>
+            </div>
+            
+            <div class="bg-white p-6 rounded-lg shadow-md">
+                <div class="flex items-center justify-between">
+                    <div>
+                        <p class="text-gray-600 text-sm">투표 진행 중</p>
+                        <p class="text-3xl font-bold text-green-600" id="stat-voting">0</p>
+                    </div>
+                    <i class="fas fa-vote-yea text-green-600 text-4xl"></i>
+                </div>
+            </div>
+            
+            <div class="bg-white p-6 rounded-lg shadow-md">
+                <div class="flex items-center justify-between">
+                    <div>
+                        <p class="text-gray-600 text-sm">채택 예정</p>
+                        <p class="text-3xl font-bold text-purple-600" id="stat-adopted">0</p>
+                    </div>
+                    <i class="fas fa-check-circle text-purple-600 text-4xl"></i>
+                </div>
+            </div>
+            
+            <div class="bg-white p-6 rounded-lg shadow-md">
+                <div class="flex items-center justify-between">
+                    <div>
+                        <p class="text-gray-600 text-sm">총 참여 주민</p>
+                        <p class="text-3xl font-bold text-blue-600" id="stat-users">0</p>
+                    </div>
+                    <i class="fas fa-users text-blue-600 text-4xl"></i>
+                </div>
+            </div>
+        </div>
+
+        <!-- 탭 메뉴 -->
+        <div class="bg-white rounded-lg shadow-md mb-6">
+            <div class="border-b">
+                <div class="flex">
+                    <button class="tab-btn px-6 py-4 font-semibold border-b-2 border-primary text-primary" data-tab="pending">
+                        검토 대기 중
+                    </button>
+                    <button class="tab-btn px-6 py-4 font-semibold text-gray-600 hover:text-primary" data-tab="voting">
+                        투표 중
+                    </button>
+                    <button class="tab-btn px-6 py-4 font-semibold text-gray-600 hover:text-primary" data-tab="adopted">
+                        채택된 정책
+                    </button>
+                    <button class="tab-btn px-6 py-4 font-semibold text-gray-600 hover:text-primary" data-tab="all">
+                        전체 제안
+                    </button>
+                </div>
+            </div>
+
+            <!-- 제안 목록 -->
+            <div class="p-6">
+                <div id="proposals-list" class="space-y-4">
+                    <!-- 제안 카드들이 여기에 로드됩니다 -->
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- 제안 검토 모달 -->
+    <div id="reviewModal" class="hidden fixed inset-0 bg-black bg-opacity-50 flex items-center justify-center z-50 p-4">
+        <div class="bg-white rounded-lg max-w-3xl w-full max-h-[90vh] overflow-y-auto">
+            <div class="sticky top-0 bg-white border-b p-6 flex justify-between items-center">
+                <h3 class="text-2xl font-bold text-gray-800">제안 검토</h3>
+                <button onclick="closeReviewModal()" class="text-gray-500 hover:text-gray-700">
+                    <i class="fas fa-times text-2xl"></i>
+                </button>
+            </div>
+            
+            <div class="p-6" id="reviewContent">
+                <!-- 제안 내용이 여기에 로드됩니다 -->
+            </div>
+            
+            <div class="sticky bottom-0 bg-gray-50 border-t p-6">
+                <textarea id="adminFeedback" class="w-full border rounded-lg p-3 mb-4" rows="3" placeholder="검토 의견을 입력하세요..."></textarea>
+                <div class="flex space-x-4">
+                    <button onclick="approveProposal()" class="flex-1 bg-green-500 text-white px-6 py-3 rounded-lg hover:bg-green-600 transition">
+                        <i class="fas fa-check mr-2"></i>승인 (투표 상정)
+                    </button>
+                    <button onclick="rejectProposal()" class="flex-1 bg-red-500 text-white px-6 py-3 rounded-lg hover:bg-red-600 transition">
+                        <i class="fas fa-times mr-2"></i>반려
+                    </button>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <script src="https://cdn.jsdelivr.net/npm/axios@1.6.0/dist/axios.min.js"></script>
+    <script>
+        const API_BASE = '/api'
+        let currentTab = 'pending'
+        let currentProposal = null
+        const adminUserId = 3 // 관리자 ID (실제 환경에서는 세션에서 가져옴)
+
+        // 페이지 로드
+        document.addEventListener('DOMContentLoaded', () => {
+            loadStatistics()
+            loadProposals('pending')
+            setupTabs()
+        })
+
+        // 탭 설정
+        function setupTabs() {
+            document.querySelectorAll('.tab-btn').forEach(btn => {
+                btn.addEventListener('click', () => {
+                    // 모든 탭 비활성화
+                    document.querySelectorAll('.tab-btn').forEach(b => {
+                        b.classList.remove('border-primary', 'text-primary', 'border-b-2')
+                        b.classList.add('text-gray-600')
+                    })
+                    
+                    // 클릭한 탭 활성화
+                    btn.classList.remove('text-gray-600')
+                    btn.classList.add('border-primary', 'text-primary', 'border-b-2')
+                    
+                    // 제안 로드
+                    const tab = btn.dataset.tab
+                    currentTab = tab
+                    loadProposals(tab === 'all' ? '' : tab)
+                })
+            })
+        }
+
+        // 통계 로드
+        async function loadStatistics() {
+            try {
+                const response = await axios.get(`${API_BASE}/statistics`)
+                const stats = response.data
+                
+                document.getElementById('stat-users').textContent = stats.total_users
+                
+                stats.proposals_by_status.forEach(item => {
+                    const element = document.getElementById(`stat-${item.status}`)
+                    if (element) {
+                        element.textContent = item.count
+                    }
+                })
+            } catch (error) {
+                console.error('통계 로드 실패:', error)
+            }
+        }
+
+        // 제안 목록 로드
+        async function loadProposals(status) {
+            try {
+                const params = status ? { status } : {}
+                const response = await axios.get(`${API_BASE}/proposals`, { params })
+                const proposals = response.data.proposals
+                
+                const container = document.getElementById('proposals-list')
+                container.innerHTML = ''
+                
+                if (proposals.length === 0) {
+                    container.innerHTML = `
+                        <div class="text-center py-12">
+                            <i class="fas fa-inbox text-gray-300 text-6xl mb-4"></i>
+                            <p class="text-gray-500 text-lg">제안이 없습니다.</p>
+                        </div>
+                    `
+                    return
+                }
+                
+                proposals.forEach(proposal => {
+                    container.appendChild(createAdminProposalCard(proposal))
+                })
+            } catch (error) {
+                console.error('제안 로드 실패:', error)
+            }
+        }
+
+        // 관리자용 제안 카드 생성
+        function createAdminProposalCard(proposal) {
+            const card = document.createElement('div')
+            card.className = 'bg-gray-50 border-l-4 border-blue-500 rounded-lg p-6 hover:shadow-md transition'
+            
+            const statusColors = {
+                pending: 'bg-orange-100 text-orange-800',
+                approved: 'bg-blue-100 text-blue-800',
+                voting: 'bg-green-100 text-green-800',
+                adopted: 'bg-purple-100 text-purple-800'
+            }
+            
+            const statusNames = {
+                pending: '검토 대기',
+                approved: '승인됨',
+                voting: '투표 중',
+                adopted: '채택됨'
+            }
+            
+            card.innerHTML = `
+                <div class="flex justify-between items-start mb-4">
+                    <div>
+                        <h4 class="text-xl font-bold text-gray-800 mb-2">${proposal.title}</h4>
+                        <div class="flex items-center space-x-4 text-sm text-gray-600">
+                            <span><i class="fas fa-user mr-1"></i>${proposal.author_nickname}</span>
+                            <span><i class="fas fa-calendar mr-1"></i>${formatDate(proposal.created_at)}</span>
+                            <span><i class="fas fa-eye mr-1"></i>${proposal.view_count}회 조회</span>
+                        </div>
+                    </div>
+                    <span class="px-3 py-1 rounded-full text-sm font-semibold ${statusColors[proposal.status]}">
+                        ${statusNames[proposal.status]}
+                    </span>
+                </div>
+                
+                <p class="text-gray-700 mb-4 line-clamp-2">${proposal.problem_definition}</p>
+                
+                <div class="flex items-center justify-between">
+                    <div class="flex items-center space-x-4 text-sm">
+                        <span class="text-green-600"><i class="fas fa-thumbs-up mr-1"></i>${proposal.vote_count_yes}</span>
+                        <span class="text-red-600"><i class="fas fa-thumbs-down mr-1"></i>${proposal.vote_count_no}</span>
+                    </div>
+                    
+                    ${proposal.status === 'pending' ? `
+                        <button onclick="showReviewModal(${proposal.id})" class="bg-primary text-white px-4 py-2 rounded-lg hover:bg-blue-700 transition">
+                            <i class="fas fa-search mr-2"></i>검토하기
+                        </button>
+                    ` : `
+                        <button onclick="showProposalDetail(${proposal.id})" class="bg-gray-600 text-white px-4 py-2 rounded-lg hover:bg-gray-700 transition">
+                            <i class="fas fa-eye mr-2"></i>상세보기
+                        </button>
+                    `}
+                </div>
+            `
+            
+            return card
+        }
+
+        // 검토 모달 표시
+        async function showReviewModal(proposalId) {
+            try {
+                const response = await axios.get(`${API_BASE}/proposals/${proposalId}`)
+                const proposal = response.data.proposal
+                currentProposal = proposal
+                
+                document.getElementById('reviewContent').innerHTML = `
+                    <div class="space-y-6">
+                        <div>
+                            <h4 class="font-bold text-lg mb-2">📋 제목</h4>
+                            <p class="text-gray-700">${proposal.title}</p>
+                        </div>
+                        
+                        <div>
+                            <h4 class="font-bold text-lg mb-2">❗ 문제 정의</h4>
+                            <p class="text-gray-700">${proposal.problem_definition}</p>
+                        </div>
+                        
+                        <div>
+                            <h4 class="font-bold text-lg mb-2">📊 현재 상황</h4>
+                            <p class="text-gray-700">${proposal.current_situation}</p>
+                        </div>
+                        
+                        <div>
+                            <h4 class="font-bold text-lg mb-2">💡 해결 방안</h4>
+                            <p class="text-gray-700">${proposal.solution}</p>
+                        </div>
+                        
+                        ${proposal.estimated_budget ? `
+                            <div>
+                                <h4 class="font-bold text-lg mb-2">💰 예상 예산</h4>
+                                <p class="text-gray-700">${proposal.estimated_budget}</p>
+                            </div>
+                        ` : ''}
+                        
+                        ${proposal.expected_effect ? `
+                            <div>
+                                <h4 class="font-bold text-lg mb-2">⭐ 기대 효과</h4>
+                                <p class="text-gray-700">${proposal.expected_effect}</p>
+                            </div>
+                        ` : ''}
+                        
+                        <div class="bg-blue-50 border border-blue-200 rounded-lg p-4">
+                            <h4 class="font-bold text-lg mb-2">ℹ️ 제안자 정보</h4>
+                            <p class="text-gray-700">닉네임: ${proposal.author_nickname}</p>
+                            <p class="text-gray-700">신뢰지수: ${proposal.author_trust_score}점</p>
+                        </div>
+                    </div>
+                `
+                
+                document.getElementById('reviewModal').classList.remove('hidden')
+            } catch (error) {
+                console.error('제안 로드 실패:', error)
+                alert('제안을 불러오는데 실패했습니다.')
+            }
+        }
+
+        // 모달 닫기
+        function closeReviewModal() {
+            document.getElementById('reviewModal').classList.add('hidden')
+            document.getElementById('adminFeedback').value = ''
+            currentProposal = null
+        }
+
+        // 제안 승인
+        async function approveProposal() {
+            if (!currentProposal) return
+            
+            const feedback = document.getElementById('adminFeedback').value.trim()
+            
+            if (!feedback) {
+                alert('검토 의견을 입력해주세요.')
+                return
+            }
+            
+            try {
+                await axios.patch(`${API_BASE}/proposals/${currentProposal.id}/status`, {
+                    admin_user_id: adminUserId,
+                    status: 'voting',
+                    admin_feedback: feedback
+                })
+                
+                alert('제안이 승인되어 투표에 상정되었습니다.')
+                closeReviewModal()
+                loadProposals(currentTab === 'all' ? '' : currentTab)
+                loadStatistics()
+            } catch (error) {
+                console.error('승인 실패:', error)
+                alert('승인 처리에 실패했습니다.')
+            }
+        }
+
+        // 제안 반려
+        async function rejectProposal() {
+            if (!currentProposal) return
+            
+            const feedback = document.getElementById('adminFeedback').value.trim()
+            
+            if (!feedback) {
+                alert('반려 사유를 입력해주세요.')
+                return
+            }
+            
+            if (!confirm('정말 이 제안을 반려하시겠습니까?')) {
+                return
+            }
+            
+            try {
+                await axios.patch(`${API_BASE}/proposals/${currentProposal.id}/status`, {
+                    admin_user_id: adminUserId,
+                    status: 'rejected',
+                    admin_feedback: feedback
+                })
+                
+                alert('제안이 반려되었습니다.')
+                closeReviewModal()
+                loadProposals(currentTab === 'all' ? '' : currentTab)
+                loadStatistics()
+            } catch (error) {
+                console.error('반려 실패:', error)
+                alert('반려 처리에 실패했습니다.')
+            }
+        }
+
+        // 날짜 포맷
+        function formatDate(dateString) {
+            const date = new Date(dateString)
+            return date.toLocaleDateString('ko-KR')
+        }
+    </script>
+</body>
+</html>

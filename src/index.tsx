@@ -546,6 +546,9 @@ app.get('/', (c) => {
                         <a href="#voting" class="text-gray-600 hover:text-primary transition">투표 중</a>
                         <a href="#progress" class="text-gray-600 hover:text-primary transition">진행 상황</a>
                         <a href="#statistics" class="text-gray-600 hover:text-primary transition">통계</a>
+                        <a href="/static/admin.html" class="text-red-600 hover:text-red-700 transition">
+                            <i class="fas fa-shield-alt mr-1"></i>관리자
+                        </a>
                     </div>
                     <button id="loginBtn" class="bg-primary text-white px-6 py-2 rounded-lg hover:bg-blue-700 transition">
                         <i class="fas fa-sign-in-alt mr-2"></i>로그인
